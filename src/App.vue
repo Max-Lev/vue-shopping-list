@@ -1,19 +1,31 @@
+/* eslint-disable */
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+<div id="app">
+    <v-app>
+        <v-content>            
+            <LayoutContainer></LayoutContainer>
+        </v-content>
+    </v-app>
+</div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import LayoutContainer from './layout/layout.container';
 export default {
   name: 'app',
+  props: {},
   components: {
-    HelloWorld
+    LayoutContainer
+  },
+  data() {
+    return {};
+  },
+  methods: {
+    saveHandler(data) {
+      console.log('saveHandler: ', data);
+    }
   }
-}
+};
 </script>
 
 <style>
