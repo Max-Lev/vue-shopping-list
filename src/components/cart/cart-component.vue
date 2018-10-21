@@ -7,10 +7,14 @@
 
             <v-text-field v-model="cartName" :rules="cartRules" label="Cart Name" required></v-text-field>
 
-            <v-select v-model="select" :items="items" label="Item"></v-select>
+            <!-- <v-select v-model="select" :items="items" label="Item"></v-select> -->
 
             <v-btn :disabled="!valid" @click="submit">Add Cart</v-btn>
-
+            
+              <div v-for="(item,index) in items" :key="index">
+                {{item}}
+              </div>
+            
         </v-form>
 
     </v-layout>
@@ -20,29 +24,37 @@
 
 <script>
 import Vue from 'vue';
-var CartComponent = Vue.component('CartComponent', {
+import { serverBus } from './../../main.js';
+export default Vue.component('CartComponent', {
   props: {},
+  created() {
+    this.getShoppingListData();
+  },
+  
   data() {
     return {
       valid: false,
       cartName: 'Work Cart List',
       cartRules: [v => (v !== null && v !== '') || 'Name is Required'],
       shoppingItem: '',
-      select: '',
       items: []
     };
   },
   methods: {
     submit() {
-      console.log(this);
       if (this.$refs.form.validate()) {
-        this.$root.$emit('clickedSomething', this.cartName);
-        console.log('submit');
+        this.$root.$emit('cart-submit', this.cartName);
       } else {
         console.log('!!submit');
       }
+    },
+    getShoppingListData() {
+      serverBus.$on('shoppingList', data => {
+        console.log(data);
+        this.items = data;
+      });
     }
-  }
+  },
+  computed: {}
 });
-export default CartComponent;
 </script>

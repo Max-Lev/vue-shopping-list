@@ -10,12 +10,12 @@ export default new Router({
         {
             path: '/',
             name: 'Home',
-            component: UserRegistrationComponent,
+            component: CartComponent,
             icon: 'dashboard'
         },
         {
             path: '/carts',
-            component: CartComponent,
+            component: UserRegistrationComponent,
             name: 'Carts',
             icon: 'question_answer'
         },

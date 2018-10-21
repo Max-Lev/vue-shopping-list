@@ -31,7 +31,7 @@
 <script>
 import Vue from 'vue';
 import axios from 'axios';
-export default Vue.component('UserRegistrationComponent', {
+export default Vue.component('CartRegistrationComponent', {
   data: () => ({
     valid: true,
     name: '',
@@ -48,9 +48,7 @@ export default Vue.component('UserRegistrationComponent', {
     items: ['Item 1', 'Item 2', 'Item 3', 'Item 4'],
     checkbox: false
   }),
-  created() {
-    console.log(this.$root.shoppingList);
-  },
+
   methods: {
     submit() {
       if (this.$refs.form.validate()) {

@@ -1,16 +1,20 @@
 /* eslint-disable */
 <template>
-<div id="app">
+<section id="app">
     <v-app>
-        <v-content>            
+        <v-content>
             <LayoutContainer></LayoutContainer>
         </v-content>
     </v-app>
-</div>
+</section>
 </template>
 
 <script>
 import LayoutContainer from './layout/layout.container';
+import firebaseApp from './firebase/config.js';
+const fireStoreApp = firebaseApp.firestore();
+import Vue from 'vue';
+import { serverBus } from './main.js';
 export default {
   name: 'app',
   props: {},
@@ -18,11 +22,63 @@ export default {
     LayoutContainer
   },
   data() {
-    return {};
+    return {
+      shoppingList: []
+    };
   },
+
+  created() {
+    this.getCarts();
+    this.getShoppingApi$();
+  },
+  mounted() {
+    this.$root.$on('cart-submit', val => {
+      console.log('cart-submit emitHandler', val);
+      fireStoreApp.collection('Shopping').add({
+        Name: val
+      });
+    });
+  },
+  watch: {
+    $route(to, from) {
+      if (to.fullPath === '/') {
+        this.getShoppingApi$();
+      }
+    }
+  },
+
   methods: {
     saveHandler(data) {
       console.log('saveHandler: ', data);
+    },
+    getCarts() {
+      fireStoreApp
+        .collection('Cart')
+        .get()
+        .then(snapshot => {
+          snapshot.docs.map(item => {
+            console.log(item.data());
+          });
+        });
+    },
+
+    getShoppingApi$() {
+      console.log('action getShoppingApi$: ');
+
+      this.shoppingList = [];
+
+      fireStoreApp.collection('Shopping').onSnapshot(snapshot => {
+        snapshot.docs.map(item => {
+          this.shoppingList.push({
+            id: item.id,
+            ...item.data()
+          });
+
+          serverBus.$emit('shoppingList', this.shoppingList);
+
+          this.$root.shoppingList = this.shoppingList;
+        });
+      });
     }
   }
 };
