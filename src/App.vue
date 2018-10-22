@@ -3,7 +3,7 @@
 <section id="app">
     <v-app>
         <v-content>
-            <LayoutContainer></LayoutContainer>
+            <LayoutContainer :shoppingList="shoppingList"></LayoutContainer>
         </v-content>
     </v-app>
 </section>
@@ -21,11 +21,6 @@ export default {
   components: {
     LayoutContainer
   },
-  data() {
-    return {
-      shoppingList: []
-    };
-  },
 
   created() {
     this.getCarts();
@@ -33,18 +28,17 @@ export default {
   },
   mounted() {
     this.$root.$on('cart-submit', val => {
-      console.log('cart-submit emitHandler', val);
+      console.log('cart-submit emitHandler: ', val);
       fireStoreApp.collection('Shopping').add({
         Name: val
       });
     });
   },
-  watch: {
-    $route(to, from) {
-      if (to.fullPath === '/') {
-        this.getShoppingApi$();
-      }
-    }
+
+  data() {
+    return {
+      shoppingList: []
+    };
   },
 
   methods: {
@@ -65,20 +59,24 @@ export default {
     getShoppingApi$() {
       console.log('action getShoppingApi$: ');
 
-      this.shoppingList = [];
-
       fireStoreApp.collection('Shopping').onSnapshot(snapshot => {
+        this.shoppingList = [];
         snapshot.docs.map(item => {
           this.shoppingList.push({
             id: item.id,
             ...item.data()
           });
-
           serverBus.$emit('shoppingList', this.shoppingList);
-
           this.$root.shoppingList = this.shoppingList;
         });
       });
+    }
+  },
+  watch: {
+    $route(to, from) {
+      if (to.fullPath === '/') {
+        this.getShoppingApi$();
+      }
     }
   }
 };

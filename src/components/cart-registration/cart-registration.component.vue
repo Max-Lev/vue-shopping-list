@@ -1,71 +1,58 @@
 <template>
-
 <v-container>
 
     <v-layout justify-center>
 
         <v-form ref="form" v-model="valid" lazy-validation>
 
-            <v-text-field v-model="name" :rules="nameRules" :counter="10" label="Name" required></v-text-field>
+            <v-text-field v-model="cartName" :rules="cartRules" label="Cart Name" required></v-text-field>
 
-            <v-text-field v-model="email" :rules="emailRules" label="E-mail" required></v-text-field>
+            <!-- <v-select v-model="select" :cartItems="cartItems" label="Item"></v-select> -->
 
-            <v-select v-model="select" :items="items" :rules="[v => !!v || 'Item is required']" label="Item" required></v-select>
-
-            <v-checkbox v-model="checkbox" :rules="[v => !!v || 'You must agree to continue!']" label="Do you agree?" required></v-checkbox>
-
-            <v-btn :disabled="!valid" @click="submit">
-                submit
-            </v-btn>
-
-            <v-btn @click="clear">clear</v-btn>
-
+            <v-btn :disabled="!valid" @click="submit">Add Cart</v-btn>
+            
+              <div v-for="(item,index) in cartItems" :key="index">
+                {{item}}
+              </div>
+            
         </v-form>
-        
+
     </v-layout>
 
 </v-container>
-
 </template>
 
 <script>
 import Vue from 'vue';
-import axios from 'axios';
+import { serverBus } from './../../main.js';
 export default Vue.component('CartRegistrationComponent', {
-  data: () => ({
-    valid: true,
-    name: '',
-    nameRules: [
-      v => !!v || 'Name is required',
-      v => (v && v.length <= 10) || 'Name must be less than 10 characters'
-    ],
-    email: '',
-    emailRules: [
-      v => !!v || 'E-mail is required',
-      v => /.+@.+/.test(v) || 'E-mail must be valid'
-    ],
-    select: null,
-    items: ['Item 1', 'Item 2', 'Item 3', 'Item 4'],
-    checkbox: false
-  }),
-
+  props: {},
+  created() {
+    this.getShoppingListData();
+  },
+  data() {
+    return {
+      valid: false,
+      cartName: '',
+      cartRules: [v => (v !== null && v !== '') || 'Name is Required'],
+      shoppingItem: '',
+      cartItems: []
+    };
+  },
   methods: {
     submit() {
       if (this.$refs.form.validate()) {
-        // Native form submission is not yet supported
-        axios.post('/api/submit', {
-          name: this.name,
-          email: this.email,
-          select: this.select,
-          checkbox: this.checkbox
-        });
+        this.$root.$emit('cart-submit', this.cartName);
+      } else {
+        console.log('!!submit');
       }
     },
-    clear() {
-      console.log('clear: ', form);
-      this.$refs.form.reset();
+    getShoppingListData() {
+      serverBus.$on('shoppingList', data => {
+        console.log(data);
+        this.cartItems = data;
+      });
     }
   }
 });
 </script>
-
