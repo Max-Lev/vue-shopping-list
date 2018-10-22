@@ -1,7 +1,8 @@
 <template>
-<v-card height="350px">
+<v-card style="display:flex;flex:1">
 
-    <v-navigation-drawer v-model="drawer" permanent absolute>
+    <!-- absolute -->
+    <v-navigation-drawer v-model="drawer" permanent width="200" style="display:inline-flex;flex-direction:column;flex:.2;max-width:350px">
 
         <v-toolbar flat class="transparent">
             <v-list class="pa-0">
@@ -33,59 +34,68 @@
                 </v-list-tile-action>
 
             </v-list-tile>
-
         </v-list>
 
     </v-navigation-drawer>
-
-    <router-view></router-view>
+    <section class="router-view-container">
+        <router-view></router-view>
+    </section>
 
 </v-card>
 </template>
 
 <script>
 import Vue from 'vue';
-import UserRegistrationComponent from './../components/user-registration/user-registration.component.vue';
-import CartRegistrationComponent from './../components/cart-registration/cart-registration.component';
-
+import ShoppingCartComponent from './../views/shopping-cart/shopping-cart.component';
+import CartRegistrationComponent from './../views/cart-registration/cart-registration.component';
 import router from './routes.js';
+import { serverBus } from './../main.js';
 export default Vue.component('LayoutContainer', {
   props: {
     shoppingList: Array
   },
   components: {
-    UserRegistrationComponent,
+    ShoppingCartComponent,
     CartRegistrationComponent
   },
-
+  created() {
+    this.cartDetailsRouting();
+  },
   data() {
     return {
       drawer: true,
       right: null,
-      routes: router.options.routes
-      //   cartsCounter: this.shoppingList.length
+      routes: router.options.routes.filter(route => route.sidebar)
     };
   },
   watch: {
-    shoppingList: (newVal, oldVal) => {
-      console.log('$watch: ', newVal.length);
-    },
     shoppingList: {
-      handler: 'setCounter'
+      handler: 'setShoppingCartsCounter'
     }
   },
 
   methods: {
-    setCounter() {
+    setShoppingCartsCounter() {
       this.routes[1].cartsAmount = this.shoppingList.length;
-      console.log('setCounter');
     },
     nav(item) {
       router.push(item.path);
     },
-    getAmount(amount) {
-      console.log('getAmount: ', amount);
+    cartDetailsRouting() {
+      serverBus.$on('cart-details-event', cartData => {
+        console.log('cartData: ', cartData);
+        router.push(`cart/${cartData.Id}`);
+      });
     }
   }
 });
 </script>
+<style>
+.router-view-container {
+  display: inline-flex;
+  flex: 0.8;
+  flex-direction: row;
+  flex-wrap: wrap;
+  place-content: space-evenly;
+}
+</style>

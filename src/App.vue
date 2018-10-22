@@ -1,11 +1,11 @@
 /* eslint-disable */
 <template>
 <section id="app">
-    <v-app>
-        <v-content>
+    <!-- <v-app> -->
+        <!-- <v-content> -->
             <LayoutContainer :shoppingList="shoppingList"></LayoutContainer>
-        </v-content>
-    </v-app>
+        <!-- </v-content> -->
+    <!-- </v-app> -->
 </section>
 </template>
 
@@ -23,12 +23,10 @@ export default {
   },
 
   created() {
-    this.getCarts();
-    this.getShoppingApi$();
+    this.getShoppingCartsApi$();
   },
   mounted() {
-    this.$root.$on('cart-submit', val => {
-      console.log('cart-submit emitHandler: ', val);
+    this.$root.$on('cart-submit-event', val => {
       fireStoreApp.collection('Shopping').add({
         Name: val
       });
@@ -42,32 +40,16 @@ export default {
   },
 
   methods: {
-    saveHandler(data) {
-      console.log('saveHandler: ', data);
-    },
-    getCarts() {
-      fireStoreApp
-        .collection('Cart')
-        .get()
-        .then(snapshot => {
-          snapshot.docs.map(item => {
-            console.log(item.data());
-          });
-        });
-    },
-
-    getShoppingApi$() {
-      console.log('action getShoppingApi$: ');
-
+    getShoppingCartsApi$() {
       fireStoreApp.collection('Shopping').onSnapshot(snapshot => {
         this.shoppingList = [];
         snapshot.docs.map(item => {
           this.shoppingList.push({
-            id: item.id,
+            Id: item.id,
             ...item.data()
           });
-          serverBus.$emit('shoppingList', this.shoppingList);
           this.$root.shoppingList = this.shoppingList;
+          // serverBus.$emit('set-shopping-list-event', this.shoppingList);
         });
       });
     }
@@ -75,9 +57,9 @@ export default {
   watch: {
     $route(to, from) {
       if (to.fullPath === '/') {
-        this.getShoppingApi$();
+        this.getShoppingCartsApi$();
       }
-    }
+    },
   }
 };
 </script>
