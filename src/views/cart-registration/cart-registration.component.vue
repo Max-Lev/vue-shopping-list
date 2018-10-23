@@ -3,9 +3,9 @@
 
     <v-layout justify-center style="flex:.8">
 
-        <v-form ref="form" v-model="valid" lazy-validation>
+        <v-form ref="form" v-model="valid" lazy-validation noValidate >
 
-            <v-text-field v-model="cartName" :rules="cartRules" label="Cart Name" required></v-text-field>
+            <v-text-field  v-model="cartName" :rules="cartRules" label="Cart Name" required></v-text-field>
 
             <v-btn :disabled="!valid" @click="submit">Add Cart</v-btn>
             
@@ -27,11 +27,13 @@ export default Vue.component('CartRegistrationComponent', {
     };
   },
   methods: {
-    submit() {
+    submit(event) {
+      event.preventDefault();
       if (this.$refs.form.validate()) {
         this.$root.$emit('cart-submit-event', this.cartName);
-        this.cartName = '';
-      }
+        this.$refs.form.reset();
+      } 
+      
     }
   }
 });

@@ -28,7 +28,14 @@ export default {
   mounted() {
     this.$root.$on('cart-submit-event', val => {
       fireStoreApp.collection('Shopping').add({
-        Name: val
+        Name: val,
+        Products: [
+          {
+            Name: '',
+            Price: '',
+            Quantity: ''
+          }
+        ]
       });
     });
   },
@@ -59,7 +66,7 @@ export default {
       if (to.fullPath === '/') {
         this.getShoppingCartsApi$();
       }
-    },
+    }
   }
 };
 </script>
