@@ -26,7 +26,7 @@
                 </v-list-tile-action>
 
                 <v-list-tile-content>
-                    <v-list-tile-title>{{ item.name }}</v-list-tile-title>
+                    <v-list-tile-title>{{ item.title }}</v-list-tile-title>
                 </v-list-tile-content>
 
                 <v-list-tile-action>
@@ -65,7 +65,7 @@ export default Vue.component('LayoutContainer', {
     return {
       drawer: true,
       right: null,
-      routes: router.options.routes.filter(route => route.sidebar)
+      routes: router.options.routes.filter(route => route.sidebarDisplay)
     };
   },
   watch: {
@@ -83,13 +83,19 @@ export default Vue.component('LayoutContainer', {
     },
     cartDetailsRouting() {
       serverBus.$on('cart-details-event', cartData => {
-        console.log('cartData: ', cartData);
-        router.push(`cart/${cartData.Id}`);
+        router.push({
+          name: `cart-details`,
+          params: {
+            id: cartData.Id,
+            cart: cartData
+          }
+        });
       });
     }
   }
 });
 </script>
+
 <style>
 .router-view-container {
   display: inline-flex;

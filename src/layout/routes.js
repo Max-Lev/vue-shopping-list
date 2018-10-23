@@ -9,28 +9,34 @@ export default new Router({
     routes: [
         {
             path: '/',
-            name: 'Cart Registration',
+            name: '/',
+            title: 'Cart Registration',
             component: CartRegistrationComponent,
             icon: 'dashboard',
             cartsAmount: undefined,
-            sidebar: true
+            sidebarDisplay: true
         },
         {
             path: '/carts',
             component: ShoppingCartComponent,
-            name: 'Shopping Carts',
+            title: 'Shopping Carts',
+            name: 'carts',
             icon: 'question_answer',
             cartsAmount: undefined,
-            sidebar: true
+            sidebarDisplay: true
         },
         {
             path: '/cart/:id',
+            name: 'cart-details',
             component: CartDetailsComponent,
-            name: 'Cart Details',
+            title: 'Cart Details',
             icon: 'question_answer',
             cartsAmount: undefined,
-            sidebar: false
-            // props: { default: true, sidebar: false }
+            sidebarDisplay: false,
+            props: {
+                cartId: '',
+                cart: {}
+            },
         },
 
     ]
