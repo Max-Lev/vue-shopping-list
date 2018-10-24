@@ -4,7 +4,7 @@
     <div data-app>
         <v-toolbar flat color="white" class="elevation-1">
             <v-toolbar-title></v-toolbar-title>
-
+            <!-- DIALOG -->
             <v-dialog v-model="dialog" max-width="500px">
                 <v-btn slot="activator" color="primary" dark class="mb-2">Add Item</v-btn>
                 <v-card>
@@ -34,12 +34,12 @@
                     </v-card-actions>
                 </v-card>
             </v-dialog>
-
+            <!-- DIALOG -->
         </v-toolbar>
 
         <v-data-table :headers="headers" :items="shoppingCartItems" hide-actions class="elevation-1 text-xs-center">
             <template slot="items" slot-scope="props">
-
+                <!-- ACTIONS -->
                 <td style="display: flex;justify-content: flex-start;align-items: center;">
                     <v-icon small class="mr-2" @click="editItemHandler(props.item)">
                         edit
@@ -50,14 +50,18 @@
                     <v-icon small @click="removeQuantity(props.item)">
                         remove
                     </v-icon>
+                    <v-icon small @click="deleteHandler(props.item)">
+                        delete
+                    </v-icon>
                 </td>
-
+                <!-- ACTIONS -->
+                <!-- RAW DATA -->
                 <td class="text-xs-left">{{ props.item.Name}}</td>
 
                 <td class="text-xs-left">{{ props.item.Price}}</td>
 
                 <td class="text-xs-left">{{ props.item.Quantity }}</td>
-
+                <!-- RAW DATA -->
             </template>
 
             <template slot="no-data">
@@ -82,13 +86,11 @@ export default Vue.component('CartDetailsComponent', {
     watch: {
         dialog(val) {
             val || this.close();
+        },
+        shoppingCartItems: {
+            handler(val) {},
+            deep: true
         }
-        // shoppingCartItems: {
-        //   handler(val) {
-        //     console.log('$watch deserts');
-        //   },
-        //   deep: true
-        // }
     },
 
     data() {
@@ -148,19 +150,30 @@ export default Vue.component('CartDetailsComponent', {
                 item = Object.assign({}, item, {
                     Quantity: --item.Quantity
                 });
+                this.apiService.updateCategoryItem(this.cart, item, 'update');
             }
         },
         addQuantity(item) {
             item = Object.assign({}, item, {
                 Quantity: ++item.Quantity
             });
+            this.apiService.updateCategoryItem(this.cart, item, 'update');
         },
-
+        deleteHandler(item) {
+            this.apiService.updateCategoryItem(this.cart, item, 'delete');
+        },
         save() {
             if (this.$refs.form.validate()) {
                 if (this.editedIndex > -1) {
-                    Object.assign(this.shoppingCartItems[this.editedIndex], this.editedItem);
-                    this.apiService.updateCategoryItem(this.cart, this.editedItem, 'update');
+                    Object.assign(
+                        this.shoppingCartItems[this.editedIndex],
+                        this.editedItem
+                    );
+                    this.apiService.updateCategoryItem(
+                        this.cart,
+                        this.editedItem,
+                        'update'
+                    );
                 } else {
                     this.apiService.updateCategoryItem(this.cart, this.editedItem, 'add');
                 }

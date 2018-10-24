@@ -1,5 +1,4 @@
 <template>
-<!-- <v-container> -->
 
     <v-layout justify-center style="flex:.8">
 
@@ -13,7 +12,6 @@
 
     </v-layout>
 
-<!--</v-container> -->
 </template>
 
 <script>
