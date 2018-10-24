@@ -5,9 +5,9 @@
 
         <v-form ref="form" v-model="valid" lazy-validation noValidate >
 
-            <v-text-field  v-model="cartName" :rules="cartRules" label="Cart Name" required></v-text-field>
+            <v-text-field  v-model="cartName" :rules="cartRules" label="Category Name" required></v-text-field>
 
-            <v-btn :disabled="!valid" @click="submit">Add Cart</v-btn>
+            <v-btn :disabled="!valid" @click="submit">Add Category</v-btn>
             
         </v-form>
 
@@ -23,7 +23,7 @@ export default Vue.component('CartRegistrationComponent', {
     return {
       valid: false,
       cartName: '',
-      cartRules: [v => (v !== null && v !== '') || 'Cart Name is Required']
+      cartRules: [v => (v !== null && v !== '') || 'Category Name is Required']
     };
   },
   methods: {
@@ -33,7 +33,6 @@ export default Vue.component('CartRegistrationComponent', {
         this.$root.$emit('cart-submit-event', this.cartName);
         this.$refs.form.reset();
       } 
-      
     }
   }
 });

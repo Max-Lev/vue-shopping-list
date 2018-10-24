@@ -1,8 +1,8 @@
 <template>
 
 <section class="carts-layout-container">
-    <div class="cart-container" v-for="(item,index) in cartItems" :key="index">
-        <CartComponent :cartData="item"></CartComponent>
+    <div class="cart-container" v-for="(cart,index) in cartsList" :key="index">
+        <CartComponent :cart="cart"></CartComponent>
     </div>
 </section>
 
@@ -23,24 +23,24 @@ export default Vue.component('ShoppingCartComponent', {
     props: {},
     data() {
         return {
-            cartItems: []
+            cartsList: []
         };
     },
     created() {
-        this.cartItems = this.$root.shoppingList;
+        this.cartsList = this.$root.shoppingList;
         this.getShoppingCartsApi$();
     },
     watch: {
-        cartItems() {
-            this.cartItems = this.$root.shoppingList;
+        cartsList() {
+            this.cartsList = this.$root.shoppingList;
         }
     },
     methods: {
         getShoppingCartsApi$() {
             fireStoreApp.collection('Shopping').onSnapshot(snapshot => {
-                this.cartItems = [];
+                this.cartsList = [];
                 snapshot.docs.map(item => {
-                    this.cartItems.push({
+                    this.cartsList.push({
                         id: item.id,
                         ...item.data()
                     });

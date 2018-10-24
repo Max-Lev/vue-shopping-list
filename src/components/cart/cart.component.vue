@@ -1,11 +1,11 @@
 <template>
 <v-flex xs12 sm12>
-    <v-card @click.native="nav(cartData)" style="white-space: nowrap;">
+    <v-card @click.native="nav(cart)" style="white-space: nowrap;">
         <v-img src="https://cdn.vuetifyjs.com/images/cards/desert.jpg" aspect-ratio="2.75"></v-img>
 
         <v-card-title primary-title>
             <div>
-                <h3 class="headline mb-0">{{cartData.Name}} <span class="subheading">Shopping Cart</span></h3>
+                <h3 class="headline mb-0">{{cart.Name}} <span class="subheading">Shopping Cart</span></h3>
             </div>
         </v-card-title>
 
@@ -18,11 +18,11 @@ import Vue from 'vue';
 import { serverBus } from './../../main.js';
 export default Vue.component('CartComponent', {
   props: {
-    cartData: Object
+    cart: Object
   },
   methods: {
-    nav(cartData) {
-      serverBus.$emit('cart-details-event', cartData);
+    nav(cart) {
+      serverBus.$emit('cart-details-event', cart);
     }
   }
 });

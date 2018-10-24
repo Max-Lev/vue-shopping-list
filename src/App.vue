@@ -29,13 +29,7 @@ export default {
     this.$root.$on('cart-submit-event', val => {
       fireStoreApp.collection('Shopping').add({
         Name: val,
-        Products: [
-          {
-            Name: '',
-            Price: '',
-            Quantity: ''
-          }
-        ]
+        Products: []
       });
     });
   },
@@ -50,13 +44,12 @@ export default {
     getShoppingCartsApi$() {
       fireStoreApp.collection('Shopping').onSnapshot(snapshot => {
         this.shoppingList = [];
-        snapshot.docs.map(item => {
+        snapshot.docs.map(category => {
           this.shoppingList.push({
-            Id: item.id,
-            ...item.data()
+            categoryID: category.id,
+            ...category.data()
           });
           this.$root.shoppingList = this.shoppingList;
-          // serverBus.$emit('set-shopping-list-event', this.shoppingList);
         });
       });
     }

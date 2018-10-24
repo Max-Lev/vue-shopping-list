@@ -26,7 +26,7 @@ export default new Router({
             sidebarDisplay: true
         },
         {
-            path: '/cart/:id',
+            path: '/cart/:categoryID',
             name: 'cart-details',
             component: CartDetailsComponent,
             title: 'Cart Details',
@@ -34,7 +34,7 @@ export default new Router({
             cartsAmount: undefined,
             sidebarDisplay: false,
             props: {
-                cartId: '',
+                categoryID: '',
                 cart: {}
             },
         },
