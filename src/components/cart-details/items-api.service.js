@@ -6,32 +6,34 @@ export default class ItemsApiService {
     constructor() { };
 
     updateCategoryItem(cart, categoryItem, action) {
+        
+            fireStoreApp.collection('Shopping').doc(`${cart.categoryID}`).get().then(snapshot => {
 
-        fireStoreApp.collection('Shopping').doc(`${cart.categoryID}`).get().then(snapshot => {
+                if (snapshot.data().Products !== undefined && snapshot.data().Products[0] !== '') {
 
-            if (snapshot.data().Products !== undefined && snapshot.data().Products[0] !== '') {
+                    const isItemExists = snapshot.data().Products.some(item => item.Name.toLowerCase() === categoryItem.Name.toLowerCase());
 
-                const isItemExists = snapshot.data().Products.some(item => item.Name.toLowerCase() === categoryItem.Name.toLowerCase());
-
-                if (isItemExists === true) {
-                    // add existing item
-                    if (action === 'add') {
-                        this.addExisting(cart, snapshot.data().Products, categoryItem);
+                    if (isItemExists === true) {
+                        // add existing item
+                        if (action === 'add') {
+                            this.addExisting(cart, snapshot.data().Products, categoryItem);
+                            // resolve(true);
+                        }
+                        // update existing 
+                        else if (action === 'update') {
+                            this.update(cart, snapshot.data().Products, categoryItem);
+                            // resolve(true);
+                        }
+                        else if (action === 'delete') {
+                            this.deleteHandler(cart, snapshot.data().Products, categoryItem);
+                            // resolve(true);
+                        }
+                    } else {
+                        // add new item
+                        this.add(cart, snapshot.data().Products, categoryItem)
                     }
-                    // update existing 
-                    else if (action === 'update') {
-                        this.update(cart, snapshot.data().Products, categoryItem)
-                    }
-                    else if (action === 'delete') {
-                        this.deleteHandler(cart, snapshot.data().Products, categoryItem)
-                    }
-                } else {
-                    // add new item
-                    this.add(cart, snapshot.data().Products, categoryItem);
+                    return snapshot;
                 }
-
-                return snapshot;
-            }
         });
     };
 

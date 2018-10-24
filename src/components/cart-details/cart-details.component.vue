@@ -128,21 +128,25 @@ export default Vue.component('CartDetailsComponent', {
                 this.cart = this.$route.params.cart;
                 this.shoppingCartItems = [...this.cart.Products];
             } else {
-                fireStoreApp
-                    .collection('Shopping')
-                    .doc(this.categoryID)
-                    .onSnapshot(snapshot => {
-                        if (snapshot.data() === undefined) {
-                            $router.push('/');
-                        } else {
-                            this.cart = {
-                                categoryID: this.categoryID,
-                                ...snapshot.data()
-                            };
-                            this.shoppingCartItems = [...this.cart.Products];
-                        }
-                    });
+                this.fireBaseSubsciption$();
             }
+        },
+
+        fireBaseSubsciption$() {
+            fireStoreApp
+                .collection('Shopping')
+                .doc(this.categoryID)
+                .onSnapshot(snapshot => {
+                    if (snapshot.data() === undefined) {
+                        $router.push('/');
+                    } else {
+                        this.cart = {
+                            categoryID: this.categoryID,
+                            ...snapshot.data()
+                        };
+                        this.shoppingCartItems = [...this.cart.Products];
+                    }
+                });
         },
 
         removeQuantity(item) {
@@ -178,6 +182,7 @@ export default Vue.component('CartDetailsComponent', {
                     this.apiService.updateCategoryItem(this.cart, this.editedItem, 'add');
                 }
                 this.close();
+                this.fireBaseSubsciption$();
             }
         },
 
@@ -190,7 +195,6 @@ export default Vue.component('CartDetailsComponent', {
         close() {
             this.dialog = false;
             setTimeout(() => {
-                this.$refs.form.reset();
                 this.editedItem = Object.assign({}, this.defaultItem);
                 this.editedIndex = -1;
             }, 300);
