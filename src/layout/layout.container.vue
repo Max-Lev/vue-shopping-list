@@ -19,18 +19,20 @@
         <v-list class="pt-0" dense>
             <v-divider></v-divider>
             <v-list-tile v-for="route in routes" :key="route.title" @click="nav(route)">
+                <!-- v-="route.sidebarDisplay" -->
+                <template>
+                    <v-list-tile-action>
+                        <v-icon>{{ route.icon }}</v-icon>
+                    </v-list-tile-action>
 
-                <v-list-tile-action>
-                    <v-icon>{{ route.icon }}</v-icon>
-                </v-list-tile-action>
+                    <v-list-tile-content>
+                        <v-list-tile-title>{{ route.title }}</v-list-tile-title>
+                    </v-list-tile-content>
 
-                <v-list-tile-content>
-                    <v-list-tile-title>{{ route.title }}</v-list-tile-title>
-                </v-list-tile-content>
-
-                <v-list-tile-action v-if="route.cartsAmount > 0">
-                    {{route.cartsAmount}}
-                </v-list-tile-action>
+                    <v-list-tile-action v-if="route.cartsAmount > 0">
+                        {{route.cartsAmount}}
+                    </v-list-tile-action>
+                </template>
 
             </v-list-tile>
         </v-list>
@@ -62,6 +64,7 @@ export default Vue.component('LayoutContainer', {
     created() {
         this.cartDetailsRouting();
     },
+
     data() {
         return {
             drawer: true,
