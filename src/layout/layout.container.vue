@@ -19,7 +19,7 @@
         <v-list class="pt-0" dense>
             <v-divider></v-divider>
             <v-list-tile v-for="route in routes" :key="route.title" @click="nav(route)">
-                <!-- v-="route.sidebarDisplay" -->
+                
                 <template>
                     <v-list-tile-action>
                         <v-icon>{{ route.icon }}</v-icon>
